@@ -5,7 +5,6 @@ namespace OnlineQuizSystem
 {
     public class Quiz
     {
-        // Private fields
         private int quizID;
         private string quizTitle;
         private string quizDescription;
@@ -13,7 +12,6 @@ namespace OnlineQuizSystem
         private List<Question> questions;
         private DateTime quizDate;
 
-        // Public Properties
         public int QuizID { get { return quizID; } }
         
         public string QuizTitle
@@ -46,13 +44,11 @@ namespace OnlineQuizSystem
             set { quizDate = value; }
         }
 
-        // Default Constructor
         public Quiz() 
         {
             questions = new List<Question>();
         }
 
-        // Custom Constructor
         public Quiz(int id, string title, string desc, Category category, DateTime date)
         {
             this.quizID = id;
@@ -63,7 +59,6 @@ namespace OnlineQuizSystem
             this.questions = new List<Question>();
         }
 
-        // Methods
         public void AddQuestion(Question q)
         {
             questions.Add(q);
