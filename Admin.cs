@@ -4,7 +4,6 @@ namespace OnlineQuizSystem
 {
     public class Admin : User
     {
-        // Additional Property
         private DateTime loginDate;
 
         public DateTime LoginDate
@@ -13,20 +12,18 @@ namespace OnlineQuizSystem
             set { loginDate = value; }
         }
 
-        // Default Constructor
         public Admin() : base() { }
 
-        // Custom Constructor using Base
         public Admin(int id, string username, string password, string email, DateTime loginDate) 
             : base(id, username, password, email, "Admin")
         {
             this.loginDate = loginDate;
         }
 
-        // Admin Specific Methods (Stubs for functionality handled in System class or extended logic)
         public void AddUser() { Console.WriteLine("User added."); }
         public void RemoveUser() { Console.WriteLine("User removed."); }
         
+        // This method must exist to be called from QuizSystem
         public void AddQuestion(Quiz quiz, Question q) 
         {
             quiz.AddQuestion(q);
