@@ -2,18 +2,15 @@ using System;
 
 namespace OnlineQuizSystem
 {
-    // Abstract class as per requirements (cannot be instantiated directly)
     public abstract class User
     {
-        // Private fields
         private int iD;
         private string username;
         private string password;
         private string email;
         private string role;
 
-        // Public Properties
-        public int ID { get { return iD; } } // Read-only
+        public int ID { get { return iD; } }
 
         public string Username
         {
@@ -39,10 +36,8 @@ namespace OnlineQuizSystem
             set { role = value; }
         }
 
-        // Default Constructor
         public User() { }
 
-        // Custom Constructor
         public User(int id, string username, string password, string email, string role)
         {
             this.iD = id;
@@ -52,7 +47,6 @@ namespace OnlineQuizSystem
             this.role = role;
         }
 
-        // Virtual methods to allow overriding if necessary, or standard inheritance
         public void UpdateProfile(string newEmail, string newPassword)
         {
             this.email = newEmail;
