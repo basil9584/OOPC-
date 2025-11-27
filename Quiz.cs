@@ -1,77 +1,62 @@
 using System;
-using System.Collections.Generic;
 
 namespace OnlineQuizSystem
 {
-    public class Quiz
+    public abstract class User
     {
-        private int quizID;
-        private string quizTitle;
-        private string quizDescription;
-        private Category quizCategory;
-        private List<Question> questions;
-        private DateTime quizDate;
+        private int iD;
+        private string username;
+        private string password;
+        private string email;
+        private string role;
 
-        public int QuizID { get { return quizID; } }
-        
-        public string QuizTitle
+        public int ID { get { return iD; } }
+
+        public string Username
         {
-            get { return quizTitle; }
-            set { quizTitle = value; }
+            get { return username; }
+            set { username = value; }
         }
 
-        public string QuizDescription
+        public string Password
         {
-            get { return quizDescription; }
-            set { quizDescription = value; }
+            get { return password; }
+            set { password = value; }
         }
 
-        public Category QuizCategory
+        public string Email
         {
-            get { return quizCategory; }
-            set { quizCategory = value; }
+            get { return email; }
+            set { email = value; }
         }
 
-        public List<Question> Questions
+        public string Role
         {
-            get { return questions; }
-            set { questions = value; }
+            get { return role; }
+            set { role = value; }
         }
 
-        public DateTime QuizDate
+        public User() { }
+
+        public User(int id, string username, string password, string email, string role)
         {
-            get { return quizDate; }
-            set { quizDate = value; }
+            this.iD = id;
+            this.username = username;
+            this.password = password;
+            this.email = email;
+            this.role = role;
         }
 
-        public Quiz() 
+        public void UpdateProfile(string newEmail, string newPassword)
         {
-            questions = new List<Question>();
+            this.email = newEmail;
+            this.password = newPassword;
+            Console.WriteLine("Profile updated successfully.");
         }
 
-        public Quiz(int id, string title, string desc, Category category, DateTime date)
+        public void Logout()
         {
-            this.quizID = id;
-            this.quizTitle = title;
-            this.quizDescription = desc;
-            this.quizCategory = category;
-            this.quizDate = date;
-            this.questions = new List<Question>();
-        }
-
-        public void AddQuestion(Question q)
-        {
-            questions.Add(q);
-        }
-
-        public void RemoveQuestion(Question q)
-        {
-            questions.Remove(q);
-        }
-
-        public List<Question> GetQuestions()
-        {
-            return questions;
+            Console.WriteLine($"{Username} has logged out.");
         }
     }
 }
