@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 
 namespace OnlineQuizSystem
 {
@@ -22,7 +21,6 @@ namespace OnlineQuizSystem
             categories = new List<Category>();
         }
 
-        // --- Task 2: Data Loading (Page 5, 8, 9) ---
         public void LoadSampleData()
         {
             // Create Admin
@@ -32,17 +30,16 @@ namespace OnlineQuizSystem
             students.Add(new Student(101, "student1", "pass1", "s1@ulster.ac.uk", "active"));
             students.Add(new Student(102, "student2", "pass2", "s2@ulster.ac.uk", "inactive"));
 
-            // Create Categories (Page 7)
+            // Create Categories
             Category catProg = new Category(1, "Programming Concepts", "Concepts of OOP and coding");
-            Category catData = new Category(2, "Data Structures", "Arrays, lists, stacks, queues");
             categories.Add(catProg);
-            categories.Add(catData);
+            categories.Add(new Category(2, "Data Structures", "Arrays, lists, stacks, queues"));
             categories.Add(new Category(3, "Software Design", "Patterns and architecture"));
 
-            // Create Quiz (Page 8)
+            // Create Quiz
             Quiz oopQuiz = new Quiz(1, "OOP Fundamentals", "Covers basics of object-oriented programming", catProg, DateTime.Parse("01/09/2025"));
 
-            // Create Questions (Page 9) - Adding sample 3 for brevity, real app would have all 10
+            // Create Questions
             oopQuiz.AddQuestion(new Question(1, "What does OOP stand for?", 
                 new List<string> { "Object-Oriented Programming", "Open Order Protocol", "Overloaded Operator" }, 
                 "Object-Oriented Programming", "Easy"));
@@ -55,14 +52,9 @@ namespace OnlineQuizSystem
                new List<string> { "Binding data and methods", "Inheritance", "Creating objects" },
                "Binding data and methods", "Medium"));
             
-            oopQuiz.AddQuestion(new Question(4, "Keyword to inherit in C#?",
-               new List<string> { "extends", ":", "implements" },
-               ":", "Medium"));
-
             quizzes.Add(oopQuiz);
         }
 
-        // --- Task 2: User Interface / Controlling Application ---
         public void ShowMainMenu()
         {
             bool running = true;
@@ -77,7 +69,10 @@ namespace OnlineQuizSystem
 
                 try
                 {
+                    // Basic error checking
                     string input = Console.ReadLine();
+                    if (string.IsNullOrEmpty(input)) continue;
+
                     int choice = int.Parse(input);
 
                     switch (choice)
@@ -96,7 +91,7 @@ namespace OnlineQuizSystem
                             running = false;
                             break;
                         default:
-                            Console.WriteLine("Invalid option. Press Enter to try again.");
+                            Console.WriteLine("Invalid option. Press Enter.");
                             Console.ReadLine();
                             break;
                     }
@@ -138,6 +133,7 @@ namespace OnlineQuizSystem
             return false;
         }
 
+        // --- MERGED ADMIN LOGIC ---
         private void ShowAdminMenu()
         {
             bool inAdmin = true;
@@ -146,41 +142,38 @@ namespace OnlineQuizSystem
                 Console.Clear();
                 Console.WriteLine("--- Admin Menu ---");
                 Console.WriteLine("1. View All Quizzes");
-                Console.WriteLine("2. View All Users");
-                Console.WriteLine("3. Save Quizzes to CSV");
-                Console.WriteLine("4. Logout");
+                Console.WriteLine("2. Add a New Question to a Quiz"); 
+                Console.WriteLine("3. View All Users");
+                Console.WriteLine("4. Save Quizzes to CSV");
+                Console.WriteLine("5. Logout");
                 Console.Write("Enter choice: ");
 
                 try
                 {
-                    int choice = int.Parse(Console.ReadLine());
+                    string input = Console.ReadLine();
+                    if (string.IsNullOrEmpty(input)) continue;
+                    int choice = int.Parse(input);
+
                     switch (choice)
                     {
                         case 1:
-                            foreach(var q in quizzes)
-                            {
-                                Console.WriteLine($"ID: {q.QuizID} | Title: {q.QuizTitle} | Category: {q.QuizCategory.CategoryName}");
-                                Console.WriteLine($"   Questions Count: {q.Questions.Count}");
-                            }
-                            Console.WriteLine("Press Enter...");
-                            Console.ReadLine();
+                            ViewAllQuizzes();
                             break;
                         case 2:
-                            Console.WriteLine("Admins:");
-                            foreach (var a in admins) Console.WriteLine($"- {a.Username}");
-                            Console.WriteLine("Students:");
-                            foreach (var s in students) Console.WriteLine($"- {s.Username} ({s.Status})");
-                            Console.WriteLine("Press Enter...");
-                            Console.ReadLine();
+                            AdminAddQuestionRoutine();
                             break;
                         case 3:
-                            SaveQuizToCSV();
+                            ViewAllUsers();
                             break;
                         case 4:
+                            SaveQuizToCSV();
+                            break;
+                        case 5:
                             inAdmin = false;
                             break;
                         default:
-                            Console.WriteLine("Invalid.");
+                            Console.WriteLine("Invalid option.");
+                            Console.ReadLine();
                             break;
                     }
                 }
@@ -188,9 +181,88 @@ namespace OnlineQuizSystem
             }
         }
 
+        private void ViewAllQuizzes()
+        {
+            Console.WriteLine("\n--- Quiz List ---");
+            foreach (var q in quizzes)
+            {
+                Console.WriteLine($"ID: {q.QuizID} | Title: {q.QuizTitle} | Category: {q.QuizCategory.CategoryName}");
+                Console.WriteLine($"   Questions Count: {q.Questions.Count}");
+            }
+            Console.WriteLine("Press Enter...");
+            Console.ReadLine();
+        }
+
+        private void ViewAllUsers()
+        {
+            Console.WriteLine("\n--- Admins ---");
+            foreach (var a in admins) Console.WriteLine($"- ID: {a.ID}, User: {a.Username}");
+            Console.WriteLine("\n--- Students ---");
+            foreach (var s in students) Console.WriteLine($"- ID: {s.ID}, User: {s.Username} [{s.Status}]");
+            Console.WriteLine("Press Enter...");
+            Console.ReadLine();
+        }
+
+        private void AdminAddQuestionRoutine()
+        {
+            Console.WriteLine("\n--- Add Question ---");
+            Console.WriteLine("Select a Quiz ID to add a question to:");
+            foreach (var q in quizzes) Console.WriteLine($"{q.QuizID}: {q.QuizTitle}");
+            Console.Write("Quiz ID: ");
+
+            try
+            {
+                int qId = int.Parse(Console.ReadLine());
+                Quiz selectedQuiz = quizzes.Find(q => q.QuizID == qId);
+
+                if (selectedQuiz != null)
+                {
+                    Console.Write("Enter Question Text: ");
+                    string text = Console.ReadLine();
+
+                    List<string> options = new List<string>();
+                    Console.Write("Enter Option 1: "); options.Add(Console.ReadLine());
+                    Console.Write("Enter Option 2: "); options.Add(Console.ReadLine());
+                    Console.Write("Enter Option 3: "); options.Add(Console.ReadLine());
+                    Console.Write("Enter Option 4: "); options.Add(Console.ReadLine());
+
+                    Console.Write("Enter Correct Answer Text (must match one option exactly): ");
+                    string correct = Console.ReadLine();
+
+                    Console.Write("Enter Difficulty (Easy/Medium/Hard): ");
+                    string diff = Console.ReadLine();
+
+                    // Generate ID
+                    int newId = selectedQuiz.Questions.Count + 100; 
+
+                    Question newQ = new Question(newId, text, options, correct, diff);
+                    
+                    // Use the first admin in the list to perform the action
+                    if(admins.Count > 0)
+                    {
+                        admins[0].AddQuestion(selectedQuiz, newQ);
+                    }
+                    
+                    Console.WriteLine("Question Added Successfully! Press Enter.");
+                    Console.ReadLine();
+                }
+                else
+                {
+                    Console.WriteLine("Quiz not found.");
+                    Console.ReadLine();
+                }
+            }
+            catch
+            {
+                Console.WriteLine("Error adding question. Ensure IDs are numbers.");
+                Console.ReadLine();
+            }
+        }
+
+        // --- END MERGED ADMIN LOGIC ---
+
         private void ShowStudentMenu()
         {
-            // Per requirements: Student selects category then quiz
             Console.Clear();
             Console.WriteLine("--- Student Menu ---");
             Console.WriteLine("Available Categories:");
@@ -209,8 +281,10 @@ namespace OnlineQuizSystem
 
             try
             {
-                int qIndex = int.Parse(Console.ReadLine()) - 1;
-                if(qIndex == -1) return;
+                string input = Console.ReadLine();
+                if (input == "0") return;
+
+                int qIndex = int.Parse(input) - 1;
 
                 if (qIndex >= 0 && qIndex < quizzes.Count)
                 {
@@ -236,6 +310,13 @@ namespace OnlineQuizSystem
             Console.WriteLine($"Starting Quiz: {quiz.QuizTitle}");
             Console.WriteLine(quiz.QuizDescription);
             Console.WriteLine("-----------------------------");
+
+            if(quiz.Questions.Count == 0)
+            {
+                Console.WriteLine("This quiz has no questions yet.");
+                Console.ReadLine();
+                return;
+            }
 
             foreach (var q in quiz.Questions)
             {
@@ -268,7 +349,6 @@ namespace OnlineQuizSystem
         {
             try
             {
-                // Logic to save quizzes to questions.csv
                 string filePath = "questions.csv";
                 using (StreamWriter sw = new StreamWriter(filePath))
                 {
