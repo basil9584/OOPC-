@@ -4,16 +4,13 @@ namespace OnlineQuizSystem
 {
     public class Category
     {
-        // Private fields
         private int categoryID;
         private string categoryName;
         private string categoryDescription;
 
-        // Public Properties
         public int CategoryID
         {
             get { return categoryID; }
-            // Read-only logic is handled by setting it only in constructor
         }
 
         public string CategoryName
@@ -28,10 +25,8 @@ namespace OnlineQuizSystem
             set { categoryDescription = value; }
         }
 
-        // Default Constructor
         public Category() { }
 
-        // Custom Constructor
         public Category(int id, string name, string desc)
         {
             this.categoryID = id;
@@ -39,13 +34,11 @@ namespace OnlineQuizSystem
             this.categoryDescription = desc;
         }
 
-        // Method to return info string
         public string GetCategoryInfo()
         {
             return $"{CategoryID}: {CategoryName} - {CategoryDescription}";
         }
 
-        // Method to update details
         public void UpdateCategory(string name, string desc)
         {
             this.categoryName = name;
